@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -75,6 +76,69 @@ public class GroupingObject {
 		 List<Employee> sortedByName =employees.stream()
 		 .sorted(Comparator.comparing(Employee::name)).collect(Collectors.toList());
 		 sortedByName.forEach(System.out::println);
+		 List<String> allDepats= employees.stream()
+				 .map(Employee::department)
+				 .distinct()
+				 .toList();
+		 allDepats.forEach(System.out::println);
+		 Map<String, Integer> highSalInEachDept= employees.stream()
+				 .collect(Collectors.toMap(
+						 Employee::department,
+						 Employee::salary,
+						 Integer::max));
+		 System.out.println(highSalInEachDept);
+		 Map<String, Integer> reduceOptforHighsalaries = employees.stream()
+				 .collect(Collectors.groupingBy(Employee::department, 
+						 Collectors.reducing(0, Employee::salary, Integer::max)));
+		 System.out.println(reduceOptforHighsalaries);
+		 
+		 Map<String, Long> empsbyDepa = employees.stream()
+				 .collect(Collectors.groupingBy(Employee::department,
+						 Collectors.counting()));
+		 System.out.println(empsbyDepa);
+		 Map<Integer, Long> nofSals = employees.stream()
+				 .collect(Collectors.groupingBy(Employee::salary,
+						 Collectors.counting()));
+		 System.out.println(nofSals);
+		 Map<Integer, List<Employee>> nofsalsforemp = employees.stream()
+				 .collect(Collectors.groupingBy(Employee::salary));
+		 System.out.println(nofsalsforemp);
+		 Map<Integer, List<String>> saltoNames= employees.stream()
+				 .collect(Collectors.groupingBy(Employee::salary,
+						 Collectors.mapping(Employee::name, Collectors.toList())));
+		 System.out.println(saltoNames);
+		 
+		 Integer maxSalinFinance = employees.stream()
+				 .filter(e->"Finance".equalsIgnoreCase(e.department()))
+				 .map(Employee::salary)
+				 .distinct()
+				 .sorted(Comparator.reverseOrder())
+				 .findFirst()
+				 .get();
+		 System.out.println(maxSalinFinance);
+		 Map<String, Long> countbyDepartment= employees.stream()
+				 .collect(Collectors.groupingBy(Employee::department,
+						 Collectors.counting()));
+		 Entry<String, Long> smalledDept= countbyDepartment.entrySet().stream().min(Map.Entry.comparingByValue()).get();
+		 System.out.println(smalledDept);
+		 
+		 Map<String, Long> largestDeptCount= employees.stream()
+				 .collect(Collectors.groupingBy(Employee::department,
+						 Collectors.counting()));
+		 Entry<String, Long> largDept= largestDeptCount.entrySet().stream().max(Map.Entry.comparingByValue()).get();
+		 System.out.println(largDept);
+		 Map<String, List<Employee>> getEmps= employees.stream()
+				 .collect(Collectors.groupingBy(Employee::department));
+		 Map<String, List<String>> empondept = employees.stream()
+				 .collect(Collectors.groupingBy(Employee::department,
+						 Collectors.mapping(Employee::name, Collectors.toList())));
+		 Entry<String, List<String>> smallis= empondept.entrySet().stream().min(Comparator.comparingInt(entry->entry.getValue().size())).get();
+		 System.out.println(smallis);
+		 Map<String, List<String>> finalComps= employees.stream()
+				 .collect(Collectors.groupingBy(Employee::department,
+						 Collectors.mapping(Employee::name, Collectors.toList())));
+		 Entry<String, List<String>> largroup= finalComps.entrySet().stream().max(Comparator.comparingInt(entry->entry.getValue().size())).get();
+		 System.out.println(largroup);
 	}
 	
 }
